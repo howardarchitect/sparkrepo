@@ -31,15 +31,18 @@ public class PairRddEx {
 
 		JavaRDD<String> baseRdd = sc.parallelize(inputData);
 		
-		JavaPairRDD<String, String> mapToPairRdd = baseRdd.mapToPair(rowValue -> {
+		JavaPairRDD<String, Long> mapToPairRdd = baseRdd.mapToPair(rowValue -> {
 			String[] columns = rowValue.split(":");
 			String level=columns[0];
-			String date=columns[1];
-			return new Tuple2<String,String>(level,date);
+		//	String date=columns[1];
+			return new Tuple2<String,Long>(level,1L);
 		});
 		
 		mapToPairRdd.foreach(t -> System.out.println(t._1()+"--"+t._2()));
-
+		JavaPairRDD<String, Long> sumRdd = mapToPairRdd.reduceByKey((v1,v2) -> v1+v2);
+		System.out.println("__________________");
+		sumRdd.foreach(t -> System.out.println(t._1()+"--"+t._2()));
+		
 		sc.close();
 
 	}

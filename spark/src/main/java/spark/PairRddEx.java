@@ -10,6 +10,8 @@ import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 
+import com.google.common.collect.Iterables;
+
 import scala.Tuple2;
 
 public class PairRddEx {
@@ -36,6 +38,15 @@ public class PairRddEx {
 		.mapToPair(rowValue -> new Tuple2<String,Long>(rowValue.split(":")[0],1L))
 		.reduceByKey((v1,v2) -> v1+v2)
 		.foreach(t -> System.out.println(t._1()+" level has count of  ==   "+t._2()));
+		
+		// groupby
+		
+		baseRdd
+		.mapToPair(rowValue -> new Tuple2<String,Long>(rowValue.split(":")[0],1L))
+		.groupByKey()
+		.foreach(t -> System.out.println(t._1()+
+				" level has count of  ==   "+Iterables.size(t._2)));
+		
 		
 		sc.close();
 
